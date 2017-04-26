@@ -1,6 +1,6 @@
 <div class="ui grid">
 <div class="ten wide column">
-<h1>Posts</h1>
+<h1><%= link_to('Logout', destroy_user_session_path, :method => :delete) %> </h1>
 </div>
 <div class="two wide column">
 <%= link_to new_post_path do %> <button class="ui right floated button">New&nbsp;&nbsp;<i class="icon plus"></i></button> <% end %>
@@ -8,8 +8,85 @@
 </div>
 </div>
 
-<!--Content area -->
 <div class="ui container content">
+    <% @posts.reverse_each do |p| %>
+	<div class="ui divider"></div>
+	<div class="ui items">
+	    <div class="item" align="left">
+		<div class="content">
+		    <div class="meta">
+			<span><i class="calendar icon"></i> <%= p.created_at %> <i class="user icon"></i> <%= p.user.name %>
+			    <i class="tag icon"></i> Tags </span>
+		    </div>
+		    <div class="description" align="justify">
+			<div style="float: left; width: 6%;">
+			    <img src="<%= image_path "#{p.user.id}.png" %>" height="100%" width="100%">                      
+			</div>
+			<div style="float: left; width: 4%;">
+			    &nbsp;
+			</div>
+			<div style="float: left; width: 90%;">
+			    <p> <%= p.content %> </p>
+
+			</div>
+		    </div>
+		</div>
+
+	    </div>
+	    <div class="ui labeled button like_btn" tabindex="0">
+		<% if p.likes.where(user_id: current_user.id).count == 0 %>  
+		    <button class="ui red button" onclick="location.href='/likes/create/<%=p.id%>'">
+		    <% else %>
+			<button class="ui red button " onclick="location.href='/likes/destroy/<%=p.likes.where(user_id: current_user.id).first.id %>'">
+	            <% end %>
+			<i class="heart icon"></i> Like
+		    </button>
+		    <a class="ui basic red left pointing label">
+			<%= p.likes.count %>
+		    </a>
+	    </div>
+
+	    <div class="ui labeled button comment_btn" data-index="1" tabindex="0">
+		    <div class="ui basic button">
+			<i class="comment icon"></i> Replies
+		    </div>
+		    <a class="ui basic left pointing label">
+		    <%= p.comments.count %>
+		</a>
+	    </div>
+	    <div class="ui comments" data-index="1" style="display: none;">
+		<% p.comments.each do |c| %>
+
+		<div class="comment">
+		    <a class="avatar">
+			<img src="<%= image_path "#{c.user.id}.png" %>">
+		    </a>
+		    <div class="content">
+			<a class="author"> <%= c.user.name %> </a>
+			<div class="metadata">
+			    <div class="date">2 days ago</div>
+			</div>
+			<div class="text">
+			    <%= c.content %>
+			</div>
+			<div class="actions">
+			    <a class="reply">Reply</a>
+			</div>
+		    </div>
+		</div>
+		<% end %>
+		<form class="ui reply form" action="/comments/create/<%=p.id%>" method="post">
+		    <div class="field comment_field" >
+			<textarea name="content"></textarea>
+		    </div>
+		    <button class="ui primary submit labeled icon button new_comment">
+			<i class="icon edit"></i> Add Comment
+		    </button>
+		</form>
+	    </div> <!-- end of ui comments -->
+	    <!-- comment를 만드는 block-->
+	</div> 
+    <% end %>
 	<div class="ui stackable doubling grid">
 		<!-- Middle Content -->
 		<div class="twelve wide column">
@@ -129,7 +206,6 @@
 					</form>
 				</div> <!-- end of ui comments -->
 			</div> <!-- end of ui items -->
-		</d
 		</div> <!-- end of twelve wide column -->
 	</div> <!-- end of stackable doubling grid -->
 </div> <!-- end of content container -->
@@ -141,13 +217,4 @@
 			</tr>
 		</thead>
 
-		<tbody>
-			<% @posts.each do |post| %>
-				<tr>
-					<td><%= link_to 'Show', post %></td>
-					<td><%= link_to 'Edit', edit_post_path(post) %></td>
-					<td><%= link_to 'Destroy', post, method: :delete, data: { confirm: 'Are you sure?' } %></td>
-				</tr>
-			<% end %>
-		</tbody>
 	</table>
