@@ -1,8 +1,6 @@
 class Post < ApplicationRecord
     has_many :likes
-    has_many :users, through: :likes
+    has_many :likers, through: :likes, source: :user
     has_many :comments
-    has_many :users, through: :comments
-    belongs_to :user
-
+    has_many :commenters, through: :comments, source: :user
 end
