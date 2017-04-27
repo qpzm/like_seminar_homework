@@ -20,7 +20,7 @@
 		    </div>
 		    <div class="description" align="justify">
 			<div style="float: left; width: 6%;">
-			    <img src="<%= image_path "#{p.user.id}.png" %>" height="100%" width="100%">                      
+			    <img src="<%= image_path "#{p.user.id}.png" %>" height="100%" width="100%">
 			</div>
 			<div style="float: left; width: 4%;">
 			    &nbsp;
@@ -34,19 +34,22 @@
 
 	    </div>
 	    <div class="ui labeled button like_btn" tabindex="0">
-		<% if p.likes.where(user_id: current_user.id).count == 0 %>  
-		    <button class="ui red button" onclick="location.href='/likes/create/<%=p.id%>'">
-		    <% else %>
-			<button class="ui red button " onclick="location.href='/likes/destroy/<%=p.likes.where(user_id: current_user.id).first.id %>'">
-	            <% end %>
-			<i class="heart icon"></i> Like
-		    </button>
-		    <a class="ui basic red left pointing label">
+      <% if p.likers.include?(current_user) %>
+        <button class="ui red button " onclick="location.href='/likes/destroy/<%=p.likes.where(user_id: current_user.id).first.id %>'">
+        <i class="heart icon"></i> Like
+          </button>
+        <a class="ui basic red left pointing label">
+      <% else %>
+		    <button class="ui button" onclick="location.href='/likes/create/<%=p.id%>'">
+        <i class="heart icon"></i> Like
+          </button>
+        <a class="ui basic left pointing label">
+      <% end %>
 			<%= p.likes.count %>
 		    </a>
 	    </div>
 
-	    <div class="ui labeled button comment_btn" data-index="1" tabindex="0">
+      <div class="ui labeled button comment_btn" tabindex="0">
 		    <div class="ui basic button">
 			<i class="comment icon"></i> Replies
 		    </div>
