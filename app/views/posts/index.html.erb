@@ -1,19 +1,20 @@
 <div class="ui grid">
-<div class="ten wide column">
-<h1><%= link_to('Logout', destroy_user_session_path, :method => :delete) %> </h1>
-</div>
-<div class="two wide column">
-<%= link_to new_post_path do %> <button class="ui right floated button">New&nbsp;&nbsp;<i class="icon plus"></i></button> <% end %>
+<div class="twelve wide column">
+	<%= link_to new_post_path do %> <button class="ui right floated button">New&nbsp;&nbsp;<i class="icon plus"></i></button> <% end %>
 </div>
 </div>
 </div>
 
 <div class="ui container content">
+	<div class="ui stackable doubling grid">
+		<!-- Middle Content -->
+		<div class="twelve wide column">
     <% @posts.reverse_each do |p| %>
 	<div class="ui divider"></div>
 	<div class="ui items">
 	    <div class="item" align="left">
 		<div class="content">
+				<a class="header">제목을 넣어주세요</a>
 		    <div class="meta">
 			<span><i class="calendar icon"></i> <%= p.created_at %> <i class="user icon"></i> <%= p.user.name %>
 			    <i class="tag icon"></i> Tags </span>
@@ -27,7 +28,6 @@
 			</div>
 			<div style="float: left; width: 90%;">
 			    <p> <%= p.content %> </p>
-
 			</div>
 		    </div>
 		</div>
@@ -49,7 +49,7 @@
 		    </a>
 	    </div>
 
-      <div class="ui labeled button comment_btn" tabindex="0">
+      <div class="ui labeled button comment_btn" data-post_id="<%=p.id%>" action="/comments/create/<%=p.id%>" tabindex="0">
 		    <div class="ui basic button">
 			<i class="comment icon"></i> Replies
 		    </div>
@@ -57,13 +57,11 @@
 		    <%= p.comments.count %>
 		</a>
 	    </div>
-	    <div class="ui comments" data-index="1" style="display: none;">
+	    <div class="ui comments"  data-index="1" style="display: none;">
+<div id="comment_list<%=p.id%>" >
 		<% p.comments.each do |c| %>
 
 		<div class="comment">
-		    <a class="avatar">
-			<img src="<%= image_path "#{c.user.id}.png" %>">
-		    </a>
 		    <div class="content">
 			<a class="author"> <%= c.user.name %> </a>
 			<div class="metadata">
@@ -78,146 +76,45 @@
 		    </div>
 		</div>
 		<% end %>
-		<form class="ui reply form" action="/comments/create/<%=p.id%>" method="post">
+</div>
+		<form class="ui reply form" data-post_id="<%=p.id%>" action="/comments/create/<%=p.id%>" method="post">
 		    <div class="field comment_field" >
-			<textarea name="content"></textarea>
+			<textarea name="content" class="comment_area<%=p.id%>"></textarea>
 		    </div>
-		    <button class="ui primary submit labeled icon button new_comment">
-			<i class="icon edit"></i> Add Comment
+		    <button data-post_id="<%=p.id%>"class="ui primary labeled icon button new_comment">
+					<i class="icon edit"></i> Add Comment
 		    </button>
 		</form>
 	    </div> <!-- end of ui comments -->
 	    <!-- comment를 만드는 block-->
-	</div> 
+	</div>
     <% end %>
-	<div class="ui stackable doubling grid">
-		<!-- Middle Content -->
-		<div class="twelve wide column">
-			<div class="ui divider"></div>
-			<div class="ui items">
-				<div class="item" align="left">
-					<div class="content">
-						<a class="header">Introduction About System JS</a>
-						<div class="meta">
-							<span><i class="calendar icon"></i> 10/04/2016 <i class="user icon"></i> Muhibbudin Suretno
-								<i class="tag icon"></i> Javascript </span>
-						</div>
-						<div class="description" align="justify">
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi vel, itaque ipsum iste ex. Quam reiciendis voluptatem reprehenderit natus aliquam dolore laudantium eaque praesentium ipsum itaque repellendus, nulla at error.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, nihil consequatur! Vero illum illo, nesciunt, tempora accusamus praesentium sunt...</p>
-						</div>
-					</div>
-				</div>
-				<div class="ui labeled button like_btn" tabindex="0">
-					<div class="ui red button ">
-						<i class="heart icon"></i> Like
-					</div>
-					<a class="ui basic red left pointing label">
-						1,048
-					</a>
-				</div>
-				<div class="ui labeled button comment_btn" tabindex="0">
-					<div class="ui basic button">
-						<i class="comment icon"></i> Replies
-					</div>
-					<a class="ui basic left pointing label">
-						1,048
-					</a>
-				</div>
-				<div class="ui comments"style="display: none;">
-					<div class="comment">
-						<a class="avatar">
-							<img src="<%= image_path 'christian.jpg' %>">
-						</a>
-						<div class="content">
-							<a class="author">Christian Rocha</a>
-							<div class="metadata">
-								<div class="date">2 days ago</div>
-							</div>
-							<div class="text">
-								I re-tweeted this.
-							</div>
-							<div class="actions">
-								<a class="reply">Reply</a>
-							</div>
-						</div>
-					</div>
-					<form class="ui reply form">
-						<div class="field comment_field" >
-							<textarea></textarea>
-						</div>
-						<div class="ui primary submit labeled icon button new_comment">
-							<i class="icon edit"></i> Add Comment
-						</div>
-					</form>
-				</div> <!-- end of ui comments -->
-			</div> <!-- end of ui items -->
-<div class="ui divider"></div>
-			<div class="ui items">
-				<div class="item" align="left">
-					<div class="content">
-						<a class="header">Introduction About System JS</a>
-						<div class="meta">
-							<span><i class="calendar icon"></i> 10/04/2016 <i class="user icon"></i> Muhibbudin Suretno
-								<i class="tag icon"></i> Javascript </span>
-						</div>
-						<div class="description" align="justify">
-							<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi vel, itaque ipsum iste ex. Quam reiciendis voluptatem reprehenderit natus aliquam dolore laudantium eaque praesentium ipsum itaque repellendus, nulla at error.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Perspiciatis, nihil consequatur! Vero illum illo, nesciunt, tempora accusamus praesentium sunt...</p>
-						</div>
-					</div>
-				</div>
-				<div class="ui labeled button like_btn" tabindex="0">
-					<div class="ui red button ">
-						<i class="heart icon"></i> Like
-					</div>
-					<a class="ui basic red left pointing label">
-						1,048
-					</a>
-				</div>
-				<div class="ui labeled button comment_btn" data-index="1" tabindex="0">
-					<div class="ui basic button">
-						<i class="comment icon"></i> Replies
-					</div>
-					<a class="ui basic left pointing label">
-						1,048
-					</a>
-				</div>
-				<div class="ui comments" data-index="1" style="display: none;">
-					<div class="comment">
-						<a class="avatar">
-							<img src="<%= image_path 'christian.jpg' %>">
-						</a>
-						<div class="content">
-							<a class="author">Christian Rocha</a>
-							<div class="metadata">
-								<div class="date">2 days ago</div>
-							</div>
-							<div class="text">
-								I re-tweeted this.
-							</div>
-							<div class="actions">
-								<a class="reply">Reply</a>
-							</div>
-						</div>
-					</div>
-					<form class="ui reply form">
-						<div class="field comment_field" >
-							<textarea></textarea>
-						</div>
-						<div class="ui primary submit labeled icon button new_comment">
-							<i class="icon edit"></i> Add Comment
-						</div>
-					</form>
-				</div> <!-- end of ui comments -->
-			</div> <!-- end of ui items -->
 		</div> <!-- end of twelve wide column -->
 	</div> <!-- end of stackable doubling grid -->
 </div> <!-- end of content container -->
 
-	<table>
-		<thead>
-			<tr>
-				<th colspan="3"></th>
-			</tr>
-		</thead>
-
-	</table>
+<script>
+	//ajax comment write and show
+	$(document).ready(function() {
+			$('.new_comment').click(function(e) {
+			const post_id = $(this).data("post_id");
+			const comment_area = $('.comment_area' + post_id);
+			e.preventDefault();
+			$.ajax({
+				method: "POST",
+				url: "/comments/create/" + post_id,
+				data: {
+					content: comment_area.val()
+				},
+				dataType: "json",
+				success: function(data) {
+				  var str;
+					console.log(data);
+					str = ["<div class='comment'><div class='content'><a class='author'>", data.user_name, "</a><div class='metadata'><div class='date'>2 days ago</div></div><div class='text'>", data.content, "</div><div class='actions'><a class='reply'>Reply</a></div></div></div>"].join(" ");
+					$("#comment_list" + post_id).append(str);
+					return;
+				}
+			});
+		});
+	});
+</script>
