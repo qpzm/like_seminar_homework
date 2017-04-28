@@ -1,120 +1,124 @@
 <div class="ui grid">
-<div class="twelve wide column">
-	<%= link_to new_post_path do %> <button class="ui right floated button">New&nbsp;&nbsp;<i class="icon plus"></i></button> <% end %>
-</div>
-</div>
+  <div class="twelve wide column">
+    <%= link_to new_post_path do %> <button class="ui right floated button">New&nbsp;&nbsp;<i class="icon plus"></i></button> <% end %>
+  </div>
 </div>
 
 <div class="ui container content">
-	<div class="ui stackable doubling grid">
-		<!-- Middle Content -->
-		<div class="twelve wide column">
-    <% @posts.reverse_each do |p| %>
-	<div class="ui divider"></div>
-	<div class="ui items">
-	    <div class="item" align="left">
-		<div class="content">
-				<a class="header">제목을 넣어주세요</a>
-		    <div class="meta">
-			<span><i class="calendar icon"></i> <%= p.created_at %> <i class="user icon"></i> <%= p.user.name %>
-			    <i class="tag icon"></i> Tags </span>
-		    </div>
-		    <div class="description" align="justify">
-			<div style="float: left; width: 6%;">
-			    <img src="<%= image_path "#{p.user.id}.png" %>" height="100%" width="100%">
-			</div>
-			<div style="float: left; width: 4%;">
-			    &nbsp;
-			</div>
-			<div style="float: left; width: 90%;">
-			    <p> <%= p.content %> </p>
-			</div>
-		    </div>
-		</div>
+  <div class="ui stackable doubling grid">
+    <div class="twelve wide column">
+      <% @posts.reverse_each do |p| %>
+        <div class="ui divider"></div>
+        <!--Post Content -->
+        <div class="ui items">
+          <div class="item" align="left">
+            <div class="content">
+              <a class="header">제목을 넣어주세요</a>
+              <div class="meta">
+                <span><i class="calendar icon"></i> <%= p.created_at %> <i class="user icon"></i> <%= p.user.name %>
+                <i class="tag icon"></i> Tags </span>
+              </div>
+              <div class="description" align="justify">
+                <div style="float: left; width: 6%;">
+                  <img src="<%= image_path "#{p.user.id}.png" %>" height="100%" width="100%">
+                </div>
+                <div style="float: left; width: 4%;">
+                  &nbsp;
+                </div>
+                <div style="float: left; width: 90%;">
+                  <p> <%= p.content %> </p>
+                </div>
+              </div>
+            </div>
+          </div><!-- end of Post Content -->
 
-	    </div>
-	    <div class="ui labeled button like_btn" tabindex="0">
-      <% if p.likers.include?(current_user) %>
-        <button class="ui red button " onclick="location.href='/likes/destroy/<%=p.likes.where(user_id: current_user.id).first.id %>'">
-        <i class="heart icon"></i> Like
-          </button>
-        <a class="ui basic red left pointing label">
-      <% else %>
-		    <button class="ui button" onclick="location.href='/likes/create/<%=p.id%>'">
-        <i class="heart icon"></i> Like
-          </button>
-        <a class="ui basic left pointing label">
+          <!--좋아요 버튼 -->
+          <div class="ui labeled button like_btn" tabindex="0">
+            <% if p.likers.include?(current_user) %>
+              <button class="ui red button " onclick="location.href='/likes/destroy/<%=p.likes.where(user_id: current_user.id).first.id %>'">
+                <i class="heart icon"></i> Like
+              </button>
+              <a class="ui basic red left pointing label">
+              <% else %>
+                <button class="ui button" onclick="location.href='/likes/create/<%=p.id%>'">
+                  <i class="heart icon"></i> Like
+                </button>
+                <a class="ui basic left pointing label">
+                <% end %>
+                <%= p.likes.count %>
+                </a>
+          </div>
+
+          <!-- 댓글 보기 버튼 -->
+          <div class="ui labeled button comment_btn" data-post_id="<%=p.id%>" action="/comments/create/<%=p.id%>" tabindex="0">
+            <div class="ui basic button">
+              <i class="comment icon"></i> Replies
+            </div>
+            <a class="ui basic left pointing label">
+              <%= p.comments.count %>
+            </a>
+          </div>
+
+          <!-- accordion content -->
+          <div class="ui comments"  data-index="1" style="display: none;">
+            <!-- 댓글 목록 -->
+            <div id="comment_list<%=p.id%>" >
+              <% p.comments.each do |c| %>
+
+                <div class="comment">
+                  <div class="content">
+                    <a class="author"> <%= c.user.name %> </a>
+                    <div class="metadata">
+                      <div class="date">2 days ago</div>
+                    </div>
+                    <div class="text">
+                      <%= c.content %>
+                    </div>
+                    <div class="actions">
+                      <a class="reply">Reply</a>
+                    </div>
+                  </div>
+                </div>
+              <% end %>
+            </div>
+            <!-- comment 쓰는 폼-->
+            <form class="ui reply form" data-post_id="<%=p.id%>" action="/comments/create/<%=p.id%>" method="post">
+              <div class="field comment_field" >
+                <textarea name="content" class="comment_area<%=p.id%>"></textarea>
+              </div>
+              <button data-post_id="<%=p.id%>"class="ui primary labeled icon button new_comment">
+                <i class="icon edit"></i> Add Comment
+              </button>
+            </form>
+          </div> <!-- end of ui comments -->
+        </div> <!-- end of ui items -->
       <% end %>
-			<%= p.likes.count %>
-		    </a>
-	    </div>
-
-      <div class="ui labeled button comment_btn" data-post_id="<%=p.id%>" action="/comments/create/<%=p.id%>" tabindex="0">
-		    <div class="ui basic button">
-			<i class="comment icon"></i> Replies
-		    </div>
-		    <a class="ui basic left pointing label">
-		    <%= p.comments.count %>
-		</a>
-	    </div>
-	    <div class="ui comments"  data-index="1" style="display: none;">
-<div id="comment_list<%=p.id%>" >
-		<% p.comments.each do |c| %>
-
-		<div class="comment">
-		    <div class="content">
-			<a class="author"> <%= c.user.name %> </a>
-			<div class="metadata">
-			    <div class="date">2 days ago</div>
-			</div>
-			<div class="text">
-			    <%= c.content %>
-			</div>
-			<div class="actions">
-			    <a class="reply">Reply</a>
-			</div>
-		    </div>
-		</div>
-		<% end %>
-</div>
-		<form class="ui reply form" data-post_id="<%=p.id%>" action="/comments/create/<%=p.id%>" method="post">
-		    <div class="field comment_field" >
-			<textarea name="content" class="comment_area<%=p.id%>"></textarea>
-		    </div>
-		    <button data-post_id="<%=p.id%>"class="ui primary labeled icon button new_comment">
-					<i class="icon edit"></i> Add Comment
-		    </button>
-		</form>
-	    </div> <!-- end of ui comments -->
-	    <!-- comment를 만드는 block-->
-	</div>
-    <% end %>
-		</div> <!-- end of twelve wide column -->
-	</div> <!-- end of stackable doubling grid -->
+    </div> <!-- end of twelve wide column -->
+  </div> <!-- end of stackable doubling grid -->
 </div> <!-- end of content container -->
 
 <script>
-	//ajax comment write and show
-	$(document).ready(function() {
-			$('.new_comment').click(function(e) {
-			const post_id = $(this).data("post_id");
-			const comment_area = $('.comment_area' + post_id);
-			e.preventDefault();
-			$.ajax({
-				method: "POST",
-				url: "/comments/create/" + post_id,
-				data: {
-					content: comment_area.val()
-				},
-				dataType: "json",
-				success: function(data) {
-				  var str;
-					console.log(data);
-					str = ["<div class='comment'><div class='content'><a class='author'>", data.user_name, "</a><div class='metadata'><div class='date'>2 days ago</div></div><div class='text'>", data.content, "</div><div class='actions'><a class='reply'>Reply</a></div></div></div>"].join(" ");
-					$("#comment_list" + post_id).append(str);
-					return;
-				}
-			});
-		});
-	});
+//ajax comment write and show
+$(document).ready(function() {
+  $('.new_comment').click(function(e) {
+    const post_id = $(this).data("post_id");
+    const comment_area = $('.comment_area' + post_id);
+    e.preventDefault();
+    $.ajax({
+      method: "POST",
+      url: "/comments/create/" + post_id,
+      data: {
+        content: comment_area.val()
+      },
+      dataType: "json",
+      success: function(data) {
+        var str;
+        console.log(data);
+        str = ["<div class='comment'><div class='content'><a class='author'>", data.user_name, "</a><div class='metadata'><div class='date'>2 days ago</div></div><div class='text'>", data.content, "</div><div class='actions'><a class='reply'>Reply</a></div></div></div>"].join(" ");
+        $("#comment_list" + post_id).append(str);
+        return;
+      }
+    });
+  });
+});
 </script>
