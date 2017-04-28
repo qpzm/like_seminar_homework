@@ -8,10 +8,4 @@ class CommentsController < ApplicationController
     render json: {content: @comment.content, user_name: @comment.user.name, updated_at: @comment.updated_at}
     #redirect_to :back
   end
-
-  def new
-  end
-
-  def destroy
-  end
 end

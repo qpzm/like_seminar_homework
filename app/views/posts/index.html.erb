@@ -116,6 +116,7 @@ $(document).ready(function() {
         console.log(data);
         str = ["<div class='comment'><div class='content'><a class='author'>", data.user_name, "</a><div class='metadata'><div class='date'>2 days ago</div></div><div class='text'>", data.content, "</div><div class='actions'><a class='reply'>Reply</a></div></div></div>"].join(" ");
         $("#comment_list" + post_id).append(str);
+				comment_area.val("");
         return;
       }
     });
