@@ -1,16 +1,12 @@
 Rails.application.routes.draw do
+  get 'comments/create'
+
   post 'comments/create/:post_id' => "comments#create"
-
-  get 'comments/new'
-
-  get 'comments/destroy'
 
   resources :likes
   devise_for :users
   root "posts#index"
   resources :posts
 
-  get 'likes/create/:post_id' => "likes#create"
-  get 'likes/destroy/:like_id' => "likes#destroy"
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
